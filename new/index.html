@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+<body>
+    <div>
+        <div class="form">
+            <span>
+                <label for="">One-time name</label>
+                <input type="text" name="" id="oneTimeName" placeholder="Name">
+            </span>
+
+            <span>
+                <label for="">Your content</label>
+                <textarea name="" id="content" placeholder="Your content here"></textarea>
+            </span>
+
+            <div class="btns">
+                <button type="reset">Back</button>
+                <button id="saveButton">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function newFile() {
+            try{
+                const token = localStorage.getItem('token')
+                const decoded = jwt_decode(token)
+                const name = document.getElementById('oneTimeName').value
+                const content = document.getElementById('content').value
+
+                const response = await fetch(`http://localhost:3000/new?username=${decoded.username}&name=${name}&content=${content}`)
+                const data = await response.json()
+
+                console.log(data)
+            } catch(err){
+                console.log(err)
+            }
+        }
+
+        document.getElementById('saveButton').addEventListener('click', newFile)
+    </script>
+</body>
+</html>

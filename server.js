@@ -4,6 +4,9 @@ const app = express()
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
 const mysql = require('mysql2')
+const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const path = require('path')
 
 const port = 3000;
 app.use(cors())
@@ -14,6 +17,12 @@ const db = mysql.createConnection({
     password: 'password',
     database: 'xbyte'
 })
+
+// app.get('/', (req, res)=>{
+//     const token = localStorage.getItem('token')
+
+
+// })
 
 app.get('/register', (req, res)=>{
     const username = req.query.username;
@@ -62,7 +71,17 @@ app.get('/login', (req, res)=>{
             }
 
             if(isMatch) {
-                return res.send('Successfull login')
+                const user = {
+                    username: username
+                }
+
+                const secretKey = 'mySecretKey#00'
+
+                const token = jwt.sign(user, secretKey, { expiresIn: '1h' })
+
+                return res.json({
+                    token: token
+                })
             } else {
                 return res.status(400).send('Incorrect password')
             }
@@ -70,8 +89,36 @@ app.get('/login', (req, res)=>{
     })
 })
 
+app.get('/new', (req, res)=>{
+    const username = req.query.username;
+    const name = req.query.name;
+    const content = req.query.content;
+
+    if(!username || !name || !content){
+        return res.json({
+            message: 'You missed somethin in parameters'
+        })
+    }
+
+    
+    if(!fs.existsSync(username)) {
+        fs.mkdirSync(username)
+    }
+
+    const filename = name + '.txt'
+    const pathFile = path.join(username, name)
+
+    fs.writeFile(pathFile, content, (err)=>{
+        if(err){
+            return console.log(err)
+        }
+    })
+
+    res.json({
+        message: 'Content created'
+    })
+})
+
 app.listen(port, ()=>{
     console.log(`Server: http://localhost:${port}`)
 })
-
-//Building your first login system is a huge achievement! 🚀 It’s one of the foundational pieces of many web applications, and you're on the right path. Continue experimenting, building new features, and learning about different technologies to improve your project!
