@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="signup.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="form">
+        <span class="input-span">
+            <label for="text" class="label">Username</label>
+            <input type="text" name="email" id="username" placeholder="Your username"/>
+        </span>
+        <span class="input-span">
+            <label for="password" class="label">Password</label>
+            <input type="password" name="password" id="password" placeholder="Password"/>
+            <input type="password" name="password" id="password" placeholder="Password"/>
+        </span>
+        <!-- <span class="span"><a href="#">Forgot password?</a></span> -->
+            <input class="submit" type="submit" value="Log in" id="reg"/>
+        <span class="span">Already have an account? <a href="index.html">Sign in</a></span>
+    </div>
+
+    <script>
+        async function reg() {
+            try{
+                const username = document.getElementById('username').value
+                const password = document.getElementById('password').value
+
+                // const response = await fetch(`http://localhost:3000/register?username=${username}&password=${password}`)
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                })
+                const data = await response.json()
+
+                localStorage.setItem('token', data.token)
+                window.location.href = '/index.html'
+            } catch(err){
+                console.log(err);
+            }
+        }
+
+        document.getElementById('reg').addEventListener('click', reg);
+    </script>
+</body>
+</html>

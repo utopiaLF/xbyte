@@ -9,6 +9,7 @@ const fs = require('fs')
 const path = require('path')
 
 const port = 3000;
+// const host = "0.0.0.0"
 app.use(cors())
 
 const db = mysql.createConnection({
@@ -18,49 +19,70 @@ const db = mysql.createConnection({
     database: 'xbyte'
 })
 
-// app.get('/', (req, res)=>{
-//     const token = localStorage.getItem('token')
+app.use(express.static(path.join(__dirname, "public")))
+app.use(express.json())
 
+app.get('/', (req, res)=>{
+    res.sendFile(path.join(__dirname, "public", "index.html"))
+})
 
-// })
+const verifyToken = require('./verifyToken')
 
-app.get('/register', (req, res)=>{
-    const username = req.query.username;
-    const password = req.query.password;
+app.get('/protected', verifyToken, (req, res)=>{
+    return res.json({
+        message: 'This is a protected route',
+        user: req.user
+    })
+})
+
+app.post('/register', (req, res)=>{
+    const { username, password } = req.body;
 
     if(!username || !password){
-        return res.status(500).send('You missed somethin in parameters')
+        return res.json('You missed somethin in parameters')
     }
 
     bcrypt.hash(password, 10, (err, hashedPassword)=>{
         if(err){
-            res.status(500).send('Error')
-            return console.log("Error")
+            res.json({
+                message: 'Error in hashing'
+            })
         }
 
         const sql = "INSERT INTO users (username, password) VALUES (?, ?)";
         db.query(sql, [username, hashedPassword], (err, result)=>{
             if(err){
-                return res.status(500).send('DB Error')
+                return res.json({
+                    message: 'DB Error'
+                })
             }
 
-            res.send(`User registrated successfully, username: ${username} | password: ${hashedPassword}`)
+            return res.json(`User registrated successfully, username: ${username} | password: ${hashedPassword}`)
         })
     })
 })
 
-app.get('/login', (req, res)=>{
-    const username = req.query.username;
-    const password = req.query.password;
+app.post('/login', (req, res)=>{
+    const { username, password } = req.body;
 
     if(!username || !password){
-        return res.status(500).send('You missed somethin in parameters')
+        return res.json( {
+            message: 'You missed somethin in parameters'
+        })
     }
 
     const sql = "SELECT * FROM users WHERE username = ?";
     db.query(sql, [username], (err, result)=>{
         if(err){
-            return res.status(500).send('Some error in DB')
+            return res.json({
+                message: 'Some error in DB'
+            })
+        }
+
+        if(result.length === 0){
+            return res.json({
+                message: "User not found"
+            })
         }
 
         const user = result[0]
@@ -71,19 +93,22 @@ app.get('/login', (req, res)=>{
             }
 
             if(isMatch) {
-                const user = {
+                const payload = {
+                    id: user.id,
                     username: username
                 }
 
                 const secretKey = 'mySecretKey#00'
 
-                const token = jwt.sign(user, secretKey, { expiresIn: '1h' })
+                const token = jwt.sign(payload, secretKey, { expiresIn: '1d' })
 
                 return res.json({
                     token: token
                 })
             } else {
-                return res.status(400).send('Incorrect password')
+                return res.json({
+                    message: 'Incorrect password'
+                })
             }
         })
     })

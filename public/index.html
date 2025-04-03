@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1 id="h1" class="h1">Loading...</h1>
+        <a href="new/index.html">Create a new text content</a>
+        <button id="logoutButton" class="out">Log out</button>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token')
+
+        if(!token){
+            window.location.href = '/login/index.html'
+        }
+
+        async function refresh(){
+            try{
+            const response = await fetch('http://localhost:3000/protected', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            const data = await response.json();
+
+            document.getElementById('h1').textContent = `Hi, ${data.user.username}`
+
+            console.log(data)
+        } catch(err) {
+            window.location.href = '/login/index.html'
+        }
+    }
+        refresh()
+        
+        function logout(){
+            localStorage.removeItem('token')
+            window.location.href = '/login/index.html'
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', logout);
+    </script>
+</body>
+</html>
