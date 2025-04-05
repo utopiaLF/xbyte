@@ -4,9 +4,13 @@ const app = express()
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
 const mysql = require('mysql2')
-const jwt = require('jsonwebtoken')
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
+
+require('dotenv').config()
+const jwt = require('jsonwebtoken')
+const secretKey = process.env.JST_SECRET
 
 const port = 3000;
 // const host = "0.0.0.0"
@@ -57,7 +61,9 @@ app.post('/register', (req, res)=>{
                 })
             }
 
-            return res.json(`User registrated successfully, username: ${username} | password: ${hashedPassword}`)
+            return res.json({
+                message: `User registrated successfully, username: ${username}`
+            })
         })
     })
 })
@@ -98,12 +104,11 @@ app.post('/login', (req, res)=>{
                     username: username
                 }
 
-                const secretKey = 'mySecretKey#00'
-
                 const token = jwt.sign(payload, secretKey, { expiresIn: '1d' })
 
                 return res.json({
-                    token: token
+                    token: token,
+                    message: 'Good'
                 })
             } else {
                 return res.json({
@@ -114,33 +119,43 @@ app.post('/login', (req, res)=>{
     })
 })
 
-app.get('/new', (req, res)=>{
-    const username = req.query.username;
-    const name = req.query.name;
-    const content = req.query.content;
+function generateCode(length){
+    return crypto.randomBytes(length).toString('hex').slice(0, length)
+}
 
-    if(!username || !name || !content){
+app.post('/new', (req, res)=>{
+    const { name, content } = req.body;
+
+    if(!name || !content) {
         return res.json({
-            message: 'You missed somethin in parameters'
+            message: "Empty content"
         })
     }
 
-    
-    if(!fs.existsSync(username)) {
-        fs.mkdirSync(username)
-    }
+    const randomCode = generateCode(10)
 
-    const filename = name + '.txt'
-    const pathFile = path.join(username, name)
-
-    fs.writeFile(pathFile, content, (err)=>{
+    db.query('INSERT INTO contents (code, name, content) VALUES(?, ?, ?)', [randomCode, name, content], (err, result)=>{
         if(err){
-            return console.log(err)
+            return res.json({
+                message: "Some error in DB"
+            })
         }
-    })
 
-    res.json({
-        message: 'Content created'
+        res.json({
+            message: 'Content created'
+        })
+    })
+})
+
+app.get('/c', (req, res)=>{
+    const id = req.query.id;
+
+    db.query('SELECT * FROM contents WHERE id = ?', [id], (err, result)=>{
+        if(err){
+            return res.send("Error in DB")
+        }
+
+        res.json(result[0])
     })
 })
 

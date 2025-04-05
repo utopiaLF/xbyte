@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const secretKey = process.env.JWT_SECRET
 
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1]
@@ -8,8 +10,6 @@ const verifyToken = (req, res, next) => {
             message: 'Token is required'
         })
     }
-
-    const secretKey = 'mySecretKey#00'
 
     jwt.verify(token, secretKey, (err, decoded)=>{
         if(err){

@@ -9,15 +9,40 @@
 <body>
     <div class="card">
         <span>
-            <h1>Content name</h1>
+            <h1 id="contentName">Content name</h1>
         </span>
 
         <span>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            <p id="content">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
             Vitae eveniet voluptatum magni fuga veniam? Nostrum, deserunt nulla.
             Possimus, alias? Magnam quae quibusdam minima saepe deleniti
             harum debitis odit rem expedita?</p>
+
+            <h4 id="code"></h4>
         </span>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search)
+
+        const contentId = urlParams.get('id')
+
+        async function getContent(id) {
+            try {
+                const response = await fetch(`http://localhost:3000/c?id=${id}`)
+                const data = await response.json()
+
+                console.log(data)
+
+                document.getElementById('contentName').textContent = data.name
+                document.getElementById('content').textContent = data.content
+                document.getElementById('code').textContent = 'Short code: ' + data.code
+            } catch(err) {
+                console.log(err)
+            }
+        }
+
+        getContent(contentId)
+    </script>
 </body>
 </html>

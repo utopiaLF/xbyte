@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script> -->
 </head>
 <body>
     <div>
@@ -22,7 +22,7 @@
             </span>
 
             <div class="btns">
-                <button type="reset">Back</button>
+                <button id="back">Back</button>
                 <button id="saveButton">Save</button>
             </div>
         </div>
@@ -31,14 +31,25 @@
     <script>
         async function newFile() {
             try{
-                const token = localStorage.getItem('token')
-                const decoded = jwt_decode(token)
+                // const token = localStorage.getItem('token')
+                // const decoded = jwt_decode(token)
                 const name = document.getElementById('oneTimeName').value
                 const content = document.getElementById('content').value
 
-                const response = await fetch(`http://localhost:3000/new?username=${decoded.username}&name=${name}&content=${content}`)
+                // const response = await fetch(`http://localhost:3000/new?username=${decoded.username}&name=${name}&content=${content}`)
+                const response = await fetch('http://localhost:3000/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        content: content
+                    })
+                })
                 const data = await response.json()
 
+                alert(data.message)
                 console.log(data)
             } catch(err){
                 console.log(err)
@@ -46,6 +57,13 @@
         }
 
         document.getElementById('saveButton').addEventListener('click', newFile)
+        
+        
+        function backHome(){
+            window.location.href = '/index.html'
+        }
+
+        document.getElementById('back').addEventListener('click', backHome)
     </script>
 </body>
 </html>
