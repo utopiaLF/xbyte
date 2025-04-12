@@ -27,9 +27,10 @@
             try{
                 const username = document.getElementById('username').value
                 const password = document.getElementById('password').value
+                const myHost = window.location.origin
 
                 // const response = await fetch(`http://localhost:3000/register?username=${username}&password=${password}`)
-                const response = await fetch('http://localhost:3000/register', {
+                const response = await fetch(`${myHost}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

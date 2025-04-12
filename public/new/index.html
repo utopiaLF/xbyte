@@ -36,8 +36,10 @@
                 const name = document.getElementById('oneTimeName').value
                 const content = document.getElementById('content').value
 
+                const myHost = window.location.origin
+
                 // const response = await fetch(`http://localhost:3000/new?username=${decoded.username}&name=${name}&content=${content}`)
-                const response = await fetch('http://localhost:3000/new', {
+                const response = await fetch(`${myHost}/new`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -13,9 +13,13 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(token, secretKey, (err, decoded)=>{
         if(err){
-            return res.status(404).json({
-                message: 'Token has expired or not found'
-            })
+            if(err.name === 'TokenExpiredError'){
+                res.status(401).json({
+                    message: 'Access token expired'
+                })
+
+                return console.log('Token Expired, we logged out user from account');
+            }
         }
 
         req.user = decoded;

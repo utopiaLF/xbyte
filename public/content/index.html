@@ -27,9 +27,11 @@
 
         const contentId = urlParams.get('id')
 
+        const myHost = window.location.origin
+
         async function getContent(id) {
             try {
-                const response = await fetch(`http://localhost:3000/c?id=${id}`)
+                const response = await fetch(`${myHost}/c?id=${id}`)
                 const data = await response.json()
 
                 console.log(data)

@@ -23,21 +23,22 @@
 
         async function refresh(){
             try{
-            const response = await fetch('http://localhost:3000/protected', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            const data = await response.json();
+                const myHost = window.location.origin
+                const response = await fetch(`${myHost}/protected`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                const data = await response.json();
 
-            document.getElementById('h1').textContent = `Hi, ${data.user.username}`
+                document.getElementById('h1').textContent = `Hi, ${data.user.username}`
 
-            console.log(data)
-        } catch(err) {
-            window.location.href = '/login/index.html'
+                console.log(data)
+            } catch(err) {
+                window.location.href = '/login/index.html'
+            }
         }
-    }
         refresh()
         
         function logout(){

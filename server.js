@@ -10,7 +10,7 @@ const crypto = require('crypto')
 
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-const secretKey = process.env.JST_SECRET
+const secretKey = process.env.JWT_SECRET
 
 const port = 3000;
 // const host = "0.0.0.0"
@@ -104,7 +104,7 @@ app.post('/login', (req, res)=>{
                     username: username
                 }
 
-                const token = jwt.sign(payload, secretKey, { expiresIn: '1d' })
+                const token = jwt.sign(payload, secretKey, { expiresIn: '10d' })
 
                 return res.json({
                     token: token,
