@@ -1,5 +1,5 @@
 body{
-    background-color: black;
+    background-color: #212121;
     color: white;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     height: 100vh;
@@ -18,6 +18,3 @@ a, .out{
     border-radius: 10px;
     font-weight: 600;
 }
-/* .out{
-    width: 200px;
-} */

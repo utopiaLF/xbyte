@@ -60,7 +60,8 @@
                 const data = await response.json()
 
                 alert(data.message)
-                localStorage.setItem('token', data.token)
+                localStorage.setItem('accessToken', data.accessToken)
+                localStorage.setItem('refreshToken', data.refreshToken)
                 window.location.href = '/index.html'
             } catch(err){
                 console.log(err);

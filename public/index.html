@@ -15,7 +15,8 @@
     </div>
 
     <script>
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('accessToken')
+        const refreshToken = localStorage.getItem('refreshToken')
 
         if(!token){
             window.location.href = '/login/index.html'
@@ -37,6 +38,18 @@
                 console.log(data)
             } catch(err) {
                 window.location.href = '/login/index.html'
+                // const myHost = window.location.origin
+                // const response = await fetch(`${myHost}/refreshToken`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Authorization': `Bearer ${refreshToken}`
+                //     }
+                // });
+                // const data = await response.json()
+
+                // localStorage.setItem('accessToken', data.accessToken);
+
+                // alert('token refreshed')
             }
         }
         refresh()

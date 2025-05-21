@@ -39,6 +39,24 @@ app.get('/protected', verifyToken, (req, res)=>{
     })
 })
 
+app.post('/refreshToken', (req, res)=>{
+    const refreshToken = req.headers['authorization']?.split(' ')[1]
+
+    jwt.verify(refreshToken, secretKey, (err, decoded)=>{
+        if(err){
+            if(err.name === 'TokenExpiredError'){
+                return res.status(401).send('refresh token expired')
+            }
+        }
+
+        const accessToken = jwt.sign(decoded, secretKey, { expiresIn: '30m'})
+    
+        return res.json({
+            accessToken: accessToken
+        })
+    })
+})
+
 app.post('/register', (req, res)=>{
     const { username, password } = req.body;
 
@@ -104,10 +122,12 @@ app.post('/login', (req, res)=>{
                     username: username
                 }
 
-                const token = jwt.sign(payload, secretKey, { expiresIn: '10d' })
+                const accessToken = jwt.sign(payload, secretKey, { expiresIn: '1d' })
+                const refreshToken = jwt.sign(payload, secretKey, { expiresIn: '30d' })
 
                 return res.json({
-                    token: token,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
                     message: 'Good'
                 })
             } else {
@@ -142,7 +162,8 @@ app.post('/new', (req, res)=>{
         }
 
         res.json({
-            message: 'Content created'
+            message: 'Content created',
+            id: result.insertId
         })
     })
 })
