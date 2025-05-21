@@ -18,3 +18,20 @@
 <br>
 
 *Note: You need to install all required packages before running the web app*
+<br>
+
+## How to Use
+
+**Clone the repository**
+
+```bash
+git clone https://github.com/utopiaLF/xbyte.git
+cd xbyte
+```
+<br>
+
+## Make sure you have Node.js and MySQL installed
+
+```bash
+npm install express bcryptjs cors dotenv body-parser mysql2 jsonwebtoken jwt-decode path
+```
