@@ -1,23 +1,20 @@
-# xbyte
+# XBYTE
 
-**a simple web application that allows users to create and share .txt files online**
+**A web application that allows users to create and share text-based content with others via unique links**
 
-# Technologies:
+## Tech Stack:
+ - **HTML**
+ - **CSS**
+ - **Vanilla JavaScript**
+ - **Node.js**
+ - **MySQL**
 
-#### HTML, CSS, JS and Node.js + MySQL
+## Features
+ - **Create and share text content via unique links**
+ - **Secure user authentication with hashed passwords**
+ - **Login system powered by JWT**
+ - **Content stored using MySQL**
 
 <br>
 
-# How It Works
-
-### - Users log in with a username and password, login is secured with JWT
-
-### - Passwords are safely protected using bcryptjs
-
-### - After logging in, users can write and save text
-
-### - Each text content gets a short code, unique link
-
-### - All texts are stored in a MySQL database
-
-### - You can share the link with anyone to view the text
+*Note: You need to install all required packages before running the web app*
